@@ -8,10 +8,6 @@
 #include <cstdlib>
 
 #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <cmath>
-// #include <algorithm>
 #define VERBOSE 1
 #define HEIGHT  512
 #define WIDTH   512
@@ -112,122 +108,6 @@
     return 0;
 }
 
-// void labelComponent(unsigned char *image, unsigned char *labelImage) {
-//     int x, y, counter, min, labelID = 1;
-//     for(x = 0; x < HEIGHT; x++) {
-//         for(y = 0; y < WIDTH; y++) {
-//             labelImage[x * WIDTH + y] = image[x * WIDTH + y];
-//         }
-//     }
-
-//     for(x = 0; x < HEIGHT; x++) {
-//         for (y = 0; y < WIDTH; y++) {
-//             if(image[x * WIDTH + y] == WHITE) {
-//                 int m, n;
-//                 counter = 0;
-//                 min = 255;
-//                 for(m = -1; m < 2; m++){
-//                     for (n = -1; n < 2; n++) {
-//                         // if((x + m >= 0) && ((x + m) < HEIGHT) && (y + n >= 0) && ((y + n) < WIDTH) && image[(x + m) * WIDTH + (y + n)] == WHITE) {
-//                         if((x + m >= 0) && ((x + m) < HEIGHT) && (y + n >= 0) && ((y + n) < WIDTH) && labelImage[(x + m) * WIDTH + (y + n)] != BLACK) {
-//                             if(labelImage[(x + m) * WIDTH + (y + n)] < min) {
-//                                 min = labelImage[(x + m) * WIDTH + (y + n)];
-//                             }
-//                             if(labelImage[(x + m) * WIDTH + (y + n)] == WHITE) {
-//                                 counter++;    
-//                             }
-//                         }
-//                     }
-//                 }
-
-//                 if(min == 255) {
-//                     if(counter > 1) {
-//                         // labelImage[x * WIDTH + y] = labelID;
-//                         printf("[%d]\tcounter: %d\n", x * WIDTH + y, counter);
-//                         for(m = -1; m < 2; m++){
-//                             for (n = -1; n < 2; n++) {
-//                                 if((x + m >= 0) && ((x + m) < HEIGHT) && (y + n >= 0) && ((y + n) < WIDTH) && labelImage[(x + m) * WIDTH + (y + n)] == WHITE) {
-//                                     labelImage[(x + m) * WIDTH + (y + n)] = labelID;
-//                                     printf("labelImage: %d ; labelID: %d\n", labelImage[(x + m) * WIDTH + (y + n)], labelID);
-//                                 }
-//                             }
-//                         }
-//                     }
-//                     else
-//                     {
-//                         printf("[%d]\tcounter: %d\n", x * WIDTH + y, counter);
-//                         labelImage[x * WIDTH + y] = labelID;
-//                         printf("labelImage: %d ; labelID: %d\n", labelImage[(x + m) * WIDTH + (y + n)], labelID);
-//                     }
-//                     labelID++;
-//                 }
-//                 else
-//                 {
-//                     if(counter > 1) {
-//                         printf("[%d]\tcounter: %d ; min: %d\n", x * WIDTH + y, counter, min);
-//                         for(m = -1; m < 2; m++){
-//                             for (n = -1; n < 2; n++) {
-//                                 if((x + m >= 0) && ((x + m) < HEIGHT) && (y + n >= 0) && ((y + n) < WIDTH) && labelImage[(x + m) * WIDTH + (y + n)] == WHITE) {
-//                                     labelImage[(x + m) * WIDTH + (y + n)] = min;
-//                                     printf("labelImage: %d ; labelID: %d\n", labelImage[(x + m) * WIDTH + (y + n)], labelID);
-//                                 }
-//                             }
-//                         }
-//                     }
-//                     else
-//                     {
-//                         printf("[%d]\tcounter: %d ; min: %d\n", x * WIDTH + y, counter, min);
-//                         labelImage[x * WIDTH + y] = min;
-//                         printf("labelImage: %d ; labelID: %d\n", labelImage[(x + m) * WIDTH + (y + n)], labelID);
-//                     }
-//                 }   
-
-
-
-//                 ////////////////////////
-//                 // if(counter > 0) {
-//                 //     // int pValue = labelImage[x * WIDTH + y];
-//                 //     if(min == 255) {
-//                 //         labelImage[x * WIDTH + y] = labelID;
-//                 //         // printf("[NEW]\tlabelImage[%d]: %d ; labelID: %d ; Min: %d\n", x * WIDTH + y, labelImage[x * WIDTH + y], labelID, min);
-//                 //         labelID++;
-//                 //         // printf("%s\n", );
-//                 //     } else {
-//                 //         labelImage[x * WIDTH + y] = min;
-//                 //         // printf("[ELSE]\tlabelImage[%d]: %d ; labelID: %d ; min: %d\n", x * WIDTH + y, labelImage[x * WIDTH + y], labelID, min);
-//                 //     }
-//                 // }
-//                 /////////////////////////
-
-
-
-
-//             }
-//         }
-//         printf("===== Line: %d\n", x);
-//     }
-
-//     // for(x = 0; x < HEIGHT; x++) {
-//     //     for (y = 0; y < WIDTH; y++) {
-//     //         if(image[x * WIDTH + y] == WHITE) {
-//     //             int m, n, min = 255;
-//     //             for(m = -1; m < 2; m++){
-//     //                 for (n = -1; n < 2; n++) {
-//     //                     if((x + m >= 0) && ((x + m) < HEIGHT) && (y + n >= 0) && ((y + n) < WIDTH) && image[(x + m) * WIDTH + (y + n)] != BLACK) {
-//     //                         if(labelImage[(x + m) * WIDTH + (y + n)] < min) {
-//     //                             min = labelImage[(x + m) * WIDTH + (y + n)];
-//     //                         }
-//     //                     }
-//     //                 }
-//     //             }
-//     //             labelImage[x * WIDTH + y] = min;
-//     //             printf("labelImage[%d]: %d ; min: %d\n", x * WIDTH + y, labelImage[x * WIDTH + y], min);
-//     //         }
-//     //     }
-//     //     printf("----- Line : %d\n", x);
-//     // }
-// }
-
 void componentCount(int x, int y, unsigned char *image, bool *visitImage, unsigned char pixelValue) {
     if(x >= 0 && x < HEIGHT && y >= 0 && y < WIDTH) {
         if(image[x * WIDTH + y] == pixelValue && !visitImage[x * WIDTH + y]) {
@@ -239,8 +119,6 @@ void componentCount(int x, int y, unsigned char *image, bool *visitImage, unsign
         }
     }
 }
-
-
 
 void labelComponent(unsigned char *image, unsigned char *labelImage) {
     int x, y, numberCircle = 0, labelID;
