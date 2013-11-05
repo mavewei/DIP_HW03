@@ -1,0 +1,21 @@
+# DIP Homework Assignment #3
+# 10 Jun. 2013
+# Name: 	Gan-Wei, Yeap
+# ID #: 	R01944043
+# email: 	mavewei@gmail.com
+# compiled on xbuntu 13.04 with gcc 
+
+CC=g++
+CFLAGS=-c -Wall
+LDFLAGS=
+SOURCES=problem_01.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=problem_01
+
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
