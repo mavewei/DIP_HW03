@@ -21,12 +21,11 @@
  int main(int argc, char *argv[])
  {
  	int x, y, fileSum, mask;
- 	double energyVar;
- 	char inputFilename[128], oriOutputFilename[128];
+ 	char inputFilename[32], oriOutputFilename[32];
  	unsigned char *imgIn[fileNums];
 
  	if(VERBOSE) printf("\n  -- READ SAMPLE IMAGE -- \n");
- 	for(fileSum = 0; fileSum < 16; fileSum++) {
+ 	for(fileSum = 0; fileSum < fileNums; fileSum++) {
  		if(fileSum < 9) {
  			sprintf(inputFilename, "sample0%d.raw", fileSum + 1);
  		}
@@ -52,6 +51,9 @@
  		// 	return -1;
  		// }
  	}
+
+ 	double Mag[HEIGHT][WIDTH] = {}, sumArray[fileNums][9] = {};
+ 	double k3Mean[3][9] = {}, getMean, total, sum;
  	/*Laws' Mask 3X3*/
  	double lawMask[9][9] = {
  		{1, 2, 1, 2, 4, 2, 1, 2, 1},
@@ -64,10 +66,7 @@
  		{-1, 0, 1, 2, 0, -2, -1, 0, 1},
  		{1, -2, 1, -2, 4, -2, 1, -2, 1},
  	};
- 	double lawMaskCoe[9] = {36, 12, 12, 12, 4, 4, 12, 4, 4};
- 	double Mag[HEIGHT][WIDTH] = {}, sumArray[fileNums][9] = {};
- 	double k3Mean[3][9] = {};
- 	double getMean, total, sum;
+ 	double lawMaskCoe[9] = {36, 12, 12, 12, 4, 4, 12, 4, 4}; 	
 
  	for(fileSum = 0; fileSum < fileNums; fileSum++) {
  		for(mask = 0; mask < 9; mask++) {
@@ -83,9 +82,7 @@
  				}
  			}
  			/*Get each sample whole mean value*/
- 			printf("[%d] Total: %f\n",x * WIDTH + y, total);
  			getMean = total / (HEIGHT * WIDTH);
- 			// printf("getMean: %f, total: %f\n", getMean, total);
  			total = 0;
  			for(x = 0; x < HEIGHT; x++) {
  				for(y = 0; y < WIDTH; y++) {
@@ -97,8 +94,6 @@
  			k3Mean[0][mask] += total;
  		}
  	}
-
-
  	return 0;
  }
 
