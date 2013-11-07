@@ -7,12 +7,12 @@
 
  #include <stdio.h>
  #include <stdlib.h>
+ #include <math.h>
 
  #define HEIGHT 	64
  #define WIDTH 		64
- #define fileNums	16
+ #define FILETOTALS	16
  #define VERBOSE	1
- using namespace std;
 
  int convolution(int x, int y, unsigned char *image, double *mask);
  int readImage(char *filename, unsigned char *image);
@@ -20,12 +20,15 @@
 
  int main(int argc, char *argv[])
  {
- 	int x, y, fileSum, mask;
+ 	int x, y, fileSum, mask, iters = 0;
  	char inputFilename[32], oriOutputFilename[32];
- 	unsigned char *imgIn[fileNums];
+ 	unsigned char *imgIn[FILETOTALS];
 
- 	if(VERBOSE) printf("\n  -- READ SAMPLE IMAGE -- \n");
- 	for(fileSum = 0; fileSum < fileNums; fileSum++) {
+ 	if(VERBOSE) {
+ 		printf("PROBLEM 2: TEXTURE CLASSIFICATION\n");
+ 		printf("\n  -- Read sample images -- ");	
+ 	} 
+ 	for(fileSum = 0; fileSum < FILETOTALS; fileSum++) {
  		if(fileSum < 9) {
  			sprintf(inputFilename, "sample0%d.raw", fileSum + 1);
  		}
@@ -52,8 +55,8 @@
  		// }
  	}
 
- 	double Mag[HEIGHT][WIDTH] = {}, sumArray[fileNums][9] = {};
- 	double k3Mean[3][9] = {}, getMean, total, sum;
+ 	double Mag[HEIGHT][WIDTH] = {}, sumArray[FILETOTALS][9] = {};
+ 	double k3Mean[4][9] = {}, getMean, total, sum;
  	/*Laws' Mask 3X3*/
  	double lawMask[9][9] = {
  		{1, 2, 1, 2, 4, 2, 1, 2, 1},
@@ -68,7 +71,7 @@
  	};
  	double lawMaskCoe[9] = {36, 12, 12, 12, 4, 4, 12, 4, 4}; 	
 
- 	for(fileSum = 0; fileSum < fileNums; fileSum++) {
+ 	for(fileSum = 0; fileSum < FILETOTALS; fileSum++) {
  		for(mask = 0; mask < 9; mask++) {
  			total = 0;
  			for(x = 0; x < HEIGHT; x++) {
@@ -94,6 +97,69 @@
  			k3Mean[0][mask] += total;
  		}
  	}
+ 	for(x = 0; x < 9; x++) {
+ 		k3Mean[0][x] = k3Mean[0][x] / FILETOTALS;
+ 		k3Mean[1][x] = k3Mean[0][x] - 1;
+ 		k3Mean[2][x] = k3Mean[0][x] + 1;
+ 		if(x < 5) {
+ 			k3Mean[0][x]++;
+ 		} else {
+ 			k3Mean[0][x]--;
+ 		}
+ 	}
+
+ 	int m, n, clusterNum, cluster[4][FILETOTALS] = {}, accumulator[4] = {};
+ 	double distance, distanceMin, distanceSum, distanceSumTmp;
+ 	float distanceThreshold = 0.5;
+ 	sum = 0;
+ 	while(true) {
+ 		distanceSum = 0;
+ 		for(m = 0; m < 4; m++) {
+ 			accumulator[m] = 0;
+ 		}
+ 		for(fileSum = 0; fileSum < FILETOTALS; fileSum++) {
+ 			for(m = 0; m < 4; m++) {
+ 				distance = 0;
+ 				for(mask = 0; mask < 9; mask++)
+ 					distance += pow(sumArray[fileSum][mask] - k3Mean[m][mask], 2);
+ 				if(m == 0) {
+ 					distanceMin = distance;
+ 					clusterNum = m;
+ 				}
+ 				if(distance < distanceMin) {
+ 					distanceMin = distance;
+ 					clusterNum = m;
+ 				}
+ 			}
+ 			cluster[clusterNum][accumulator[clusterNum]++] = fileSum;
+ 			distanceSum += distanceMin;
+ 		}
+ 		if(sum == 0) {
+ 			distanceSumTmp = distanceSum;
+ 			sum = 1;
+ 		}
+ 		else if((distanceSumTmp - distanceSum) < distanceThreshold)
+ 			break;
+ 		else
+ 			distanceSumTmp = distanceSum;
+
+ 		for(m = 0; m < 4; m++) {
+ 			for(mask = 0; mask < 9; mask++) {
+ 				total = 0;
+ 				for(x = 0; x < accumulator[m]; x++)
+ 					total += sumArray[cluster[m][x]][mask];
+ 				k3Mean[m][mask] = total/((double)x);
+ 			}
+ 		}
+ 	}
+ 	if(VERBOSE) printf("\n  -- Categorize into 4 diff. types -- \n\n");
+ 	for(m = 0; m < 4; m++) {
+ 		printf("\t\t=== Cluster [%d] ===\n", m+1);
+ 		for(x = 0; x < accumulator[m]; x++)
+ 			printf("sample0%d.raw\t", cluster[m][x] + 1);
+ 		printf("\n");
+ 	}
+ 	printf("\n");
  	return 0;
  }
 
